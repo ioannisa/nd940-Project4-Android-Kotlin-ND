@@ -84,12 +84,6 @@ class RemindersActivity : AppCompatActivity() {
                     .show()
             }
         }
-
-        locationSettingsResponseTask.addOnCompleteListener {
-            if ( !it.isSuccessful ) {
-
-            }
-        }
     }
 
     /**

@@ -215,9 +215,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
      * If location permissions are granted, move to the current location with zoom 16
      * otherwise present permissions dialog
      */
-    fun enableMyLocation(map: GoogleMap) {
+    private fun enableMyLocation(map: GoogleMap) {
         if (isPermissionGranted()) {
-            gotoMyLocation(map, 16f)
+            gotoMyLocation(map)
         }
         else {
             requestPermissions(
@@ -232,8 +232,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
      * 2) Move the camera with the specified zoom at the user's location (Last Known Location)
      */
     @SuppressLint("MissingPermission")
-    private fun gotoMyLocation(map: GoogleMap, zoom: Float){
-        map.setMyLocationEnabled(true)
+    private fun gotoMyLocation(map: GoogleMap, zoom: Float = 16f){
+        map.isMyLocationEnabled = true
 
         val locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val criteria = Criteria()

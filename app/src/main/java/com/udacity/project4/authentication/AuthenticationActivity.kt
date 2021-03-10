@@ -17,8 +17,6 @@ import com.udacity.project4.locationreminders.RemindersActivity
  * This class should be the starting point of the app, It asks the users to sign in / register, and redirects the
  * signed in users to the RemindersActivity.
  */
-const val SIGN_IN_REQUEST_CODE = 1
-
 class AuthenticationActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuthenticationBinding
@@ -76,7 +74,7 @@ class AuthenticationActivity : AppCompatActivity() {
     /**
      * This method will call upon the firebase login activity and handle the login callbacks
      */
-    fun firebaseLogin(){
+    private fun firebaseLogin(){
         // the val activityForResult has already been initialized by lazy in our onCreate
 
         // create the intent for the Firebase Login
