@@ -130,45 +130,6 @@ class SaveReminderFragment : BaseFragment() {
      *** GEOFENCES SECTION ***
      *************************/
 
-    fun checkDeviceLocationSettings(
-        fragment: Fragment,
-        resolve: Boolean = true,
-        onSuccessCallback: (() -> Unit)? = null,
-        onFailureCallback: (() -> Unit)? = null
-    ) {
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_LOW_POWER
-        }
-
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-        val settingsClient = LocationServices.getSettingsClient(fragment.requireContext())
-        val locationSettingsResponseTask =
-            settingsClient.checkLocationSettings(builder.build())
-
-        locationSettingsResponseTask.addOnSuccessListener {
-            onSuccessCallback?.invoke()
-        }
-
-        locationSettingsResponseTask.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException && resolve) {
-                try {
-                    fragment.registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-                        checkDeviceLocationSettings(
-                            fragment,
-                            false,
-                            onSuccessCallback,
-                            onFailureCallback
-                        )
-                    }.launch(IntentSenderRequest.Builder(exception.resolution.intentSender).build())
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
-                }
-            } else {
-                onFailureCallback?.invoke()
-            }
-        }
-    }
-
     @SuppressLint("MissingPermission")
     fun setReminderGeoFence(id: String, latitude: Double, longitude: Double){
 
