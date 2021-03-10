@@ -106,7 +106,7 @@ class SaveReminderFragment : BaseFragment() {
         // when pressing the save button at the maps fragment, take a note of the marker values to add to geofence
         _viewModel.saveMarkerLocation.observe(
             viewLifecycleOwner,
-            Observer { shouldSaveMarkerLatLng ->
+            { shouldSaveMarkerLatLng ->
                 if (shouldSaveMarkerLatLng) {
                     _viewModel.saveMarkerLocation.value = false
 
@@ -115,11 +115,7 @@ class SaveReminderFragment : BaseFragment() {
                         _viewModel.latitude.value = marker.position.latitude
                         _viewModel.longitude.value = marker.position.longitude
 
-                        // Show up to 6 decimal places in Lat/Lon values for aesthetic reasons
-                        val df = DecimalFormat("#.#######")
-                        df.roundingMode = RoundingMode.CEILING
-
-                        _viewModel.reminderSelectedLocationStr.value = "${df.format(_viewModel.latitude.value)},  ${df.format(_viewModel.longitude.value)}"
+                        _viewModel.reminderSelectedLocationStr.value = _viewModel.marker?.title
                     }
                 }
             })

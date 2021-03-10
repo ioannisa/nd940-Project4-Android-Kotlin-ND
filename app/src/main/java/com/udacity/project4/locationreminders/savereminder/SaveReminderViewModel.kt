@@ -1,18 +1,21 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.app.Application
+import android.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.PointOfInterest
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.*
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
+import com.udacity.project4.locationreminders.geofence.GeofencingConstants
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource) :
     BaseViewModel(app) {
@@ -26,7 +29,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     // The marker of google maps
     val saveMarkerLocation = MutableLiveData<Boolean>()
     var marker: Marker? = null
-    var circle: Circle? = null;
+    var circle: Circle? = null
 
 
 

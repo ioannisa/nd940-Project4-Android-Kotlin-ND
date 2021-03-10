@@ -3,10 +3,10 @@ package com.udacity.project4.locationreminders.reminderslist
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.data.FakeDataSource
-import com.udacity.project4.locationreminders.data.FakeDataUsingLondonLandmarks
-import com.udacity.project4.locationreminders.getOrAwaitValue
+import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
+import com.udacity.project4.shared.MainCoroutineRule
+import com.udacity.project4.shared.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
@@ -27,7 +27,7 @@ class RemindersListViewModelTest {
     private lateinit var viewModel: RemindersListViewModel
     private lateinit var fakeDataSource: FakeDataSource
 
-    // Rule 1: (Architecture components background jobs in the same thread)
+    // Rule 1: (Architecture components background jobs executed synchronously at same thread)
     // Ensure that the test results happen synchronously and in repeatable order
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -46,9 +46,6 @@ class RemindersListViewModelTest {
         stopKoin()
 
         fakeDataSource = FakeDataSource().apply {
-            // generate a list of 15 London landmarks, and shuffle it
-            FakeDataUsingLondonLandmarks.generateShuffledData()
-
             // add 5 random landmark item reminders
             for (i in 1..5){
                 saveReminder(FakeDataUsingLondonLandmarks.getNextDTOItem()) // runBlockingTest because saveReminder() is suspended function

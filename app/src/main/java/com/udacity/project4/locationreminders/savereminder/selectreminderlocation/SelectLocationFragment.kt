@@ -3,27 +3,18 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
-import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Color
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -32,16 +23,16 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.geofence.GeofencingConstants
-
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
@@ -122,12 +113,21 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         Log.d("TEST", "MAPS INITIALIZED: ")
 
-//        TODO COMPLETED: zoom to the user location after taking his permission
+//      TODO COMPLETED: zoom to the user location after taking his permission
         enableMyLocation(map)
-//        TODO COMPLETED: add style to the map
+
+//      TODO COMPLETED: add style to the map
         setMapStyle(map)
-//        TODO COMPLETED: put a marker to location that the user selected
-        setMapLongClick(map)
+
+//      TODO COMPLETED: put a marker to location that the user selected
+        // Add marker by long click
+        map.setOnMapClickListener { latLng ->
+            updateMarkerPosition(latLng)
+        }
+        // or by tapping on a POI
+        map.setOnPoiClickListener { poi ->
+            updateMarkerPosition(poi.latLng, poi.name)
+        }
     }
 
     /**
@@ -152,30 +152,34 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     /**
-     * On long click update marker position
-     */
-    private fun setMapLongClick(map: GoogleMap) {
-        map.setOnMapLongClickListener { latLng ->
-            updateMarkerPosition(latLng)
-        }
-    }
-
-    /**
      * 1) Remove possible previous marker
      * 2) and add new marker with a circle based on the geofence radius
      */
-    private fun updateMarkerPosition(latLng: LatLng){
+    private fun updateMarkerPosition(latLng: LatLng, locationName: String? = null){
         // remove previous marker (if any)
         _viewModel.marker?.remove()
         _viewModel.circle?.remove()
+
+
+        val title =
+            if (locationName != null){
+                 locationName
+            }
+            else{
+                // Show up to 6 decimal places in Lat/Lon values for aesthetic reasons
+                val df = DecimalFormat("#.#######")
+                df.roundingMode = RoundingMode.CEILING
+                "${df.format(latLng.latitude)},  ${df.format(latLng.longitude)}"
+            }
 
         // add new marker
         _viewModel.marker = map.addMarker(
             MarkerOptions()
                 .position(latLng)
                 .draggable(false)
-                .title("Reminder Location Area")
+                .title(title)
         )
+        _viewModel.marker?.showInfoWindow()
 
         _viewModel.circle = map.addCircle(CircleOptions()
             .center(latLng)
@@ -206,7 +210,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         return ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
-        ) === PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     /**

@@ -1,21 +1,21 @@
 package com.udacity.project4.locationreminders.savereminder
 
-import android.content.Context
+import android.app.Application
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.udacity.project4.locationreminders.MainCoroutineRule
+import com.udacity.project4.R
+import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.data.FakeDataSource
-import com.udacity.project4.locationreminders.data.FakeDataUsingLondonLandmarks
-import com.udacity.project4.locationreminders.getOrAwaitValue
-import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
+import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
+import com.udacity.project4.shared.MainCoroutineRule
+import com.udacity.project4.shared.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,15 +23,17 @@ import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.robolectric.annotation.Config
 
+// disable this if your jdk version is higher than 8
 @Config(sdk = [Build.VERSION_CODES.O])
+
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class SaveReminderViewModelTest {
 
-    //TODO: provide testing to the SaveReminderView and its live data objects
+    //TODO COMPLETED: provide testing to the SaveReminderView and its live data objects
     private lateinit var viewModel: SaveReminderViewModel
 
-    // Rule 1: (Architecture components background jobs in the same thread)
+    // Rule 1: (Architecture components background jobs executed synchronously at same thread)
     // Ensure that the test results happen synchronously and in repeatable order
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -73,5 +75,18 @@ class SaveReminderViewModelTest {
         assertThat(viewModel.showLoading.getOrAwaitValue(), `is`(false))
     }
 
+    /**
+     * When we save an item successfully, we display success toast and navigate back to the RemindersList
+     */
+    @Test
+    fun saveReminder_ToastSuccessAndNavigatesBack() = mainCoroutineRule.runBlockingTest {
+        // WHEN saving a reminder
+        viewModel.validateAndSaveReminder(FakeDataUsingLondonLandmarks.getNextDataItem())
 
+        // THEN we get displayed a toast with success message
+        Assert.assertEquals(viewModel.showToast.getOrAwaitValue(), (ApplicationProvider.getApplicationContext() as Application).getString(R.string.reminder_saved))
+
+        // AND we are navigated back to the remindersList
+        Assert.assertEquals(viewModel.navigationCommand.getOrAwaitValue(), NavigationCommand.Back )
+    }
 }

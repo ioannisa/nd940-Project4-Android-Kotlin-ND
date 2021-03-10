@@ -16,14 +16,12 @@
 package com.udacity.project4.util
 
 import android.R
-import android.app.Activity
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.withFragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.IdlingResource
 import java.util.*
@@ -62,7 +60,7 @@ class DataBindingIdlingResource : IdlingResource {
         } else {
             wasNotIdle = true
             // check next frame
-            activity.findViewById<View>(android.R.id.content).postDelayed({
+            activity.findViewById<View>(R.id.content).postDelayed({
                 isIdleNow
             }, 16)
         }
@@ -108,8 +106,8 @@ fun DataBindingIdlingResource.monitorActivity(
 /**
  * Sets the fragment from a [FragmentScenario] to be used from [DataBindingIdlingResource].
  */
-fun DataBindingIdlingResource.monitorFragment(fragmentScenario: FragmentScenario<out Fragment>) {
-    fragmentScenario.onFragment {
-        this.activity = it.requireActivity()
+fun DataBindingIdlingResource.monitorFragment(fragmentScenario: FragmentScenario<Fragment>) {
+    fragmentScenario.onFragment { fragment ->
+        activity = fragment.requireActivity()
     }
 }
