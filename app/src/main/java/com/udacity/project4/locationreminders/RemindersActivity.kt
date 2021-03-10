@@ -64,7 +64,7 @@ class RemindersActivity : AppCompatActivity() {
                     )
 
                 } catch (sendEx: IntentSender.SendIntentException) {
-                    Log.d("TEST", "Error getting location settings resolution: " + sendEx.message)
+                    Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.dlg_no_resolve_places_title))
                         .setMessage(getString(R.string.dlg_no_resolve_places_body))

@@ -111,8 +111,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        Log.d("TEST", "MAPS INITIALIZED: ")
-
 //      TODO COMPLETED: zoom to the user location after taking his permission
         enableMyLocation(map)
 
@@ -281,4 +279,3 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 }
 
 private const val REQUEST_FINE_LOCATION_PERMISSION = 1
-private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29

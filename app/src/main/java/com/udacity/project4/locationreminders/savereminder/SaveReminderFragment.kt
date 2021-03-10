@@ -111,7 +111,6 @@ class SaveReminderFragment : BaseFragment() {
                     _viewModel.saveMarkerLocation.value = false
 
                     _viewModel.marker?.let { marker ->
-                        //Log.d("TEST", "LAT: ${marker.position.latitude}, LON: ${marker.position.longitude}")
                         _viewModel.latitude.value = marker.position.latitude
                         _viewModel.longitude.value = marker.position.longitude
 
@@ -172,7 +171,6 @@ class SaveReminderFragment : BaseFragment() {
 
     @SuppressLint("MissingPermission")
     fun setReminderGeoFence(id: String, latitude: Double, longitude: Double){
-        Log.d("TEST", "SetReminderGeoFence Lat: $latitude, Lon: $longitude")
 
         // Create a GeoFence with ENTER transition
         val geofence = Geofence.Builder()
@@ -191,33 +189,19 @@ class SaveReminderFragment : BaseFragment() {
             .addGeofence(geofence)
             .build()
 
-//        geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
-//            addOnSuccessListener {
-//                _viewModel.showSnackBarInt.value = R.string.geofences_added
-//                Log.d("TEST", "GEOFENCE ADDED SUCCESSFULLY: ")
-//            }
-//            addOnFailureListener {
-//                _viewModel.showSnackBarInt.value = R.string.geofences_not_added
-//                Log.d("TEST", "GEOFENCE FAILED TO ADD: ")
-//                it.message?.let { message ->
-//                    Log.w("TEST", message)
-//                }
-//            }
-//        }
-
         geofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnCompleteListener {
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
                         _viewModel.showSnackBarInt.value = R.string.geofences_added
-                        Log.d("TEST", "GEOFENCE ADDED SUCCESSFULLY: ${geofence.requestId}")
+                        Log.d(TAG, "GEOFENCE ADDED SUCCESSFULLY: ${geofence.requestId}")
                     }
                     addOnFailureListener {
                         //_viewModel.showErrorMessage.postValue(getString(R.string.geofences_not_added))
                         _viewModel.showSnackBarInt.value = R.string.geofences_not_added
-                        Log.d("TEST", "GEOFENCE FAILED TO ADD: ")
+                        Log.d(TAG, "GEOFENCE FAILED TO ADD: ")
                         if ((it.message != null)) {
-                            Log.w("TEST", it.message?:"Exception")
+                            Log.w(TAG, it.message?:"Exception")
                         }
                     }
                 }
