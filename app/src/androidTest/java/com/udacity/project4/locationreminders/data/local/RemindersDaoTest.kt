@@ -8,9 +8,9 @@ import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth
 import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -27,7 +27,6 @@ class RemindersDaoTest {
 
 //    TODO COMPLETED: Add testing implementation to the RemindersDao.kt
 
-    private lateinit var localDataSource: RemindersLocalRepository
     private lateinit var database: RemindersDatabase
 
     // Rule 1: (Architecture components background jobs executed synchronously at same thread)
@@ -41,14 +40,7 @@ class RemindersDaoTest {
             ApplicationProvider.getApplicationContext(),
             RemindersDatabase::class.java
         )
-            .allowMainThreadQueries()
             .build()
-
-        localDataSource =
-            RemindersLocalRepository(
-                database.reminderDao(),
-                Dispatchers.Main
-            )
     }
 
     @After
@@ -58,54 +50,43 @@ class RemindersDaoTest {
      * Checking both insert and select
      */
     @Test
-    fun action_insertNewReminder_and_RetrieveItBack() = runBlocking {
+    fun insertNewReminder_and_RetrieveItBack() = runBlockingTest {
         // IF we have a DTO reminder we want to insert...
         val reminderToInsert = FakeDataUsingLondonLandmarks.getNextDTOItem()
 
-        // WHEN we insert the DTO reminder
-        localDataSource.saveReminder(reminderToInsert)
+        // GIVEN we insert the DTO reminder using the database
+        database.reminderDao().saveReminder(reminderToInsert)
 
-        // THEN if we retrieve the inserted reminder from the DB
-        val retrievedReminderFromDB = localDataSource.getReminder(reminderToInsert.id)
+        // WHEN we retrieve from the DB a stored reminder with the id of the reminder we just inserted
+        val retrievedReminderFromDB = database.reminderDao().getReminderById(reminderToInsert.id)
 
-        // AND that reminder is instance of class Success
-        Truth.assertThat(retrievedReminderFromDB).isInstanceOf(Result.Success::class.java)
-        retrievedReminderFromDB as Result.Success
-
-        // AND the retrieved reminder data will match the data we used during insert
-        assertThat(retrievedReminderFromDB.data.id, `is`(reminderToInsert.id))
-        assertThat(retrievedReminderFromDB.data.title, `is`(reminderToInsert.title))
-        assertThat(retrievedReminderFromDB.data.description, `is`(reminderToInsert.description))
-        assertThat(retrievedReminderFromDB.data.location, `is`(reminderToInsert.location))
-        assertThat(retrievedReminderFromDB.data.latitude, `is`(reminderToInsert.latitude))
-        assertThat(retrievedReminderFromDB.data.longitude, `is`(reminderToInsert.longitude))
+        // THEN the retrieved reminder data will match the data we used during insert
+        assertThat(retrievedReminderFromDB?.id, `is`(reminderToInsert.id))
+        assertThat(retrievedReminderFromDB?.title, `is`(reminderToInsert.title))
+        assertThat(retrievedReminderFromDB?.description, `is`(reminderToInsert.description))
+        assertThat(retrievedReminderFromDB?.location, `is`(reminderToInsert.location))
+        assertThat(retrievedReminderFromDB?.latitude, `is`(reminderToInsert.latitude))
+        assertThat(retrievedReminderFromDB?.longitude, `is`(reminderToInsert.longitude))
     }
 
     /**
      * Inserting a reminder and deleting all reminders
      */
     @Test
-    fun action_insertNewReminder_and_deleteAllReminders() = runBlocking {
+    fun insertNewReminder_and_deleteAllReminders() = runBlockingTest {
         // IF we have a DTO reminder we want to insert...
         val reminderToInsert = FakeDataUsingLondonLandmarks.getNextDTOItem()
 
-        // WHEN we insert the DTO reminder
-        localDataSource.saveReminder(reminderToInsert)
+        // GIVEN we insert the DTO reminder to the database
+        database.reminderDao().saveReminder(reminderToInsert)
 
-        // THEN if we retrieve the inserted reminder from the DB
-        val retrievedReminderFromDB = localDataSource.getReminder(reminderToInsert.id)
-        Truth.assertThat(retrievedReminderFromDB).isInstanceOf(Result.Success::class.java)
+        // AND we delete all reminders (now we know there is at least one reminder in our db...)
+        database.reminderDao().deleteAllReminders()
 
-        // WHEN we delete all reminders (now we know there is at least one reminder in our db...)
-        localDataSource.deleteAllReminders()
-
-        // THEN WHEN we get the list of reminders returned (after deletion)
-        val retrievedRemindersFromDB = localDataSource.getReminders()
-        // AND that list is instance of class Success
-        Truth.assertThat(retrievedRemindersFromDB).isInstanceOf(Result.Success::class.java)
-        retrievedRemindersFromDB as Result.Success
+        // AND we get back the updated list of reminders returned (after deletion)
+        val retrievedRemindersFromDB = database.reminderDao().getReminders()
 
         // THEN we make sure the retrieved list is empty (since we wanted to remove everything)
-        Truth.assertThat(retrievedRemindersFromDB.data).isEmpty()
+        Truth.assertThat(retrievedRemindersFromDB).isEmpty()
     }
 }
