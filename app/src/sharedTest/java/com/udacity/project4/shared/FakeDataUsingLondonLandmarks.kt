@@ -6,7 +6,7 @@ import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 private data class ReminderForLandmark(var title: String?,
                                        var description: String?,
                                        var location: String?,
-                                       var latitude: Double?,
+                                       var latitude: Double,
                                        var longitude: Double)
 
 class FakeDataUsingLondonLandmarks {
