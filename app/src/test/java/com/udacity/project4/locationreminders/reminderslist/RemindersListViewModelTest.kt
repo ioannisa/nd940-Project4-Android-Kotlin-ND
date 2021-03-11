@@ -111,4 +111,12 @@ class RemindersListViewModelTest {
         assertThat(viewModel.remindersList.getOrAwaitValue().isEmpty(), `is`(true))
         assertThat(viewModel.showNoData.getOrAwaitValue(), `is`(true))
     }
+
+    @Test
+    fun remindersListError() = mainCoroutineRule.runBlockingTest {
+        fakeDataSource.setReturnError(true)
+        viewModel.loadReminders()
+
+        assertThat(viewModel.showSnackBar.getOrAwaitValue(), `is`("Data Error"))
+    }
 }
