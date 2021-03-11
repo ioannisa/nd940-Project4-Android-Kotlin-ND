@@ -72,6 +72,10 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         }
     }
 
+    /**
+     * In this test we simply try to save a completely empty reminder
+     * The first error check is the title, thus we will get an error message asking to fill in the title
+     */
     @Test
     fun saveReminder_NoTitle_Error() = runBlocking {
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
@@ -126,6 +130,10 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         delay(2000)
     }
 
+    /**
+     * In this test we will get all the info (Title, Detail Text, Location)
+     * and we expect to successfully add a reminder
+     */
     @Test
     fun saveReminder_FullData_Success() = runBlocking {
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
