@@ -62,12 +62,9 @@ class SaveReminderViewModelTest {
      */
     @Test
     fun saveReminder_checkLoading() = mainCoroutineRule.runBlockingTest {
-        // generate some random items in a list
-        FakeDataUsingLondonLandmarks.generateShuffledData()
-
-        // the loading anim appeared
+         // the loading anim appeared
         mainCoroutineRule.pauseDispatcher()
-        viewModel.validateAndSaveReminder(FakeDataUsingLondonLandmarks.getNextDataItem())
+        viewModel.validateAndSaveReminder(FakeDataUsingLondonLandmarks.nextDataItem)
         assertThat(viewModel.showLoading.getOrAwaitValue(), `is`(true))
 
         // the loading anim disappeared
@@ -81,7 +78,7 @@ class SaveReminderViewModelTest {
     @Test
     fun saveReminder_ToastSuccessAndNavigatesBack() = mainCoroutineRule.runBlockingTest {
         // WHEN saving a reminder
-        viewModel.validateAndSaveReminder(FakeDataUsingLondonLandmarks.getNextDataItem())
+        viewModel.validateAndSaveReminder(FakeDataUsingLondonLandmarks.nextDataItem)
 
         // THEN we get displayed a toast with success message
         Assert.assertEquals(viewModel.showToast.getOrAwaitValue(), (ApplicationProvider.getApplicationContext() as Application).getString(R.string.reminder_saved))

@@ -6,10 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth
-import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -52,7 +50,7 @@ class RemindersDaoTest {
     @Test
     fun insertNewReminder_and_RetrieveItBack() = runBlockingTest {
         // IF we have a DTO reminder we want to insert...
-        val reminderToInsert = FakeDataUsingLondonLandmarks.getNextDTOItem()
+        val reminderToInsert = FakeDataUsingLondonLandmarks.nextDTOItem
 
         // GIVEN we insert the DTO reminder using the database
         database.reminderDao().saveReminder(reminderToInsert)
@@ -75,7 +73,7 @@ class RemindersDaoTest {
     @Test
     fun insertNewReminder_and_deleteAllReminders() = runBlockingTest {
         // IF we have a DTO reminder we want to insert...
-        val reminderToInsert = FakeDataUsingLondonLandmarks.getNextDTOItem()
+        val reminderToInsert = FakeDataUsingLondonLandmarks.nextDTOItem
 
         // GIVEN we insert the DTO reminder to the database
         database.reminderDao().saveReminder(reminderToInsert)

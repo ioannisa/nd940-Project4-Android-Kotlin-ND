@@ -3,140 +3,140 @@ package com.udacity.project4.shared
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 
-private data class Landmark( var title: String?,
-                             var description: String?,
-                             var location: String?,
-                             var latitude: Double?,
-                             var longitude: Double)
+private data class ReminderForLandmark(var title: String?,
+                                       var description: String?,
+                                       var location: String?,
+                                       var latitude: Double?,
+                                       var longitude: Double)
 
 class FakeDataUsingLondonLandmarks {
 
     companion object {
-        private var list = mutableListOf<Landmark>()
+        private var list = mutableListOf<ReminderForLandmark>()
 
-        fun generateShuffledData() {
+        private fun generateShuffledData() {
             with(list) {
 
                 clear() // to avoid duplicates, if not empty - from previous data - clear the list
 
                 // add the 15 London landmarks to the list of fake data
                 add(
-                    Landmark(
-                        title = "Big Ben",
+                    ReminderForLandmark(
+                        title = "Take a pic under the clock",
                         description = "16-storey Gothic clocktower and national symbol at the Eastern end of the Houses of Parliament.",
-                        location = "London", 51.5007292, -0.1268141
+                        location = "Big Ben", 51.5007292, -0.1268141
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Buckingham Palace",
+                    ReminderForLandmark(
+                        title = "Watch the guard change",
                         description = "Visitors can tour the palace's opulent private and state rooms or watch the changing of the guard.",
-                        location = "London", 51.501364, -0.1440787
+                        location = "Buckingham Palace", 51.501364, -0.1440787
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Westminster Abbey",
+                    ReminderForLandmark(
+                        title = "take a pic of the Abbey",
                         description = "",
-                        location = "London", 51.4994245, -0.1297526
+                        location = "Westminster Abbey", 51.4994245, -0.1297526
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Madame Tussauds",
+                    ReminderForLandmark(
+                        title = "visit the museum",
                         description = "Museum chain for life-size wax replicas of famous celebrities & historic icons in themed galleries.",
-                        location = "London", 51.5230174, -0.15655
+                        location = "Madame Tussauds", 51.5230174, -0.15655
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Tower Bridge",
+                    ReminderForLandmark(
+                        title = "take a pic of Thames river",
                         description = "Panoramic views from high level walkways and behind-the-scenes access to original lifting machinery.",
-                        location = "London", 51.5054564, -0.0775452
+                        location = "Tower Bridge", 51.5054564, -0.0775452
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Tower of London",
+                    ReminderForLandmark(
+                        title = "visit the crown jewels",
                         description = "Centuries of bloody history around a medieval castle, home to Crown Jewels and iconic Beefeaters.",
-                        location = "London", 51.5081124, -0.078138
+                        location = "Tower of London", 51.5081124, -0.078138
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Hyde Park",
+                    ReminderForLandmark(
+                        title = "visit Winter Wonderland",
                         description = "Huge green space, home to Diana Memorial Fountain, with boating and swimming in the Serpentine lake.",
-                        location = "London", 51.5072682, -0.167919
+                        location = "Hyde Park", 51.5072682, -0.167919
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "The Shard",
+                    ReminderForLandmark(
+                        title = "Eat at Oblix Restaurant",
                         description = "87-floor glass skyscraper with a jagged peak, with restaurants, offices, hotel and viewing platform.",
-                        location = "London", 51.5045, -0.0886887
+                        location = "The Shard", 51.5045, -0.0886887
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "St. Paul's Cathedral",
+                    ReminderForLandmark(
+                        title = "take a pic of Cathedral",
                         description = "Churchyard and gardens outside Saint Paul's cathedral, with a floor-plan of the original building.",
-                        location = "London", 51.5138453, -0.1005393
+                        location = "St. Paul's Cathedral", 51.5138453, -0.1005393
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Tate Modern",
+                    ReminderForLandmark(
+                        title = "visit modern art",
                         description = "Modern-art gallery with international works on display, plus a cafe with panoramic river views.",
-                        location = "London", 51.5074691, -0.1020116
+                        location = "Tate Modern", 51.5074691, -0.1020116
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Royal Albert Hall",
+                    ReminderForLandmark(
+                        title = "listen to the royal orchestra",
                         description = "One of Britain's great Victorian splendours, most famous for the Proms classical music festival.",
-                        location = "London", 51.5009088, -0.1795547
+                        location = "Royal Albert Hall", 51.5009088, -0.1795547
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Trafalgar Square",
+                    ReminderForLandmark(
+                        title = "Take pic of Nelson's column and lions",
                         description = "Nelson's Column rises above this iconic square's LED-lit fountains, artworks and lion statues.",
-                        location = "London", 51.50809, -0.1291379
+                        location = "Trafalgar Square", 51.50809, -0.1291379
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Kensington Palace",
+                    ReminderForLandmark(
+                        title = "Take a pic of Kesington Palace",
                         description = "Royal palace and gardens, with exhibits on former residents like Queen Victoria and Princess Diana.",
-                        location = "London", 51.5038918, -0.1936707
+                        location = "Kensington Palace", 51.5038918, -0.1936707
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "Science Museum",
+                    ReminderForLandmark(
+                        title = "See science wonders",
                         description = "A vast treasury of science and invention, famous for its state-of-the-art interactive exhibits.",
-                        location = "London", 51.4978095, -0.1832782
+                        location = "Science Museum", 51.4978095, -0.1832782
                     )
                 )
 
                 add(
-                    Landmark(
-                        title = "The British Museum",
+                    ReminderForLandmark(
+                        title = "See the Greek marbles",
                         description = "Huge showcase for global antiquities, including Egyptian mummies and ancient Greek sculptures.",
-                        location = "London", 51.5194133, -0.1291453
+                        location = "The British Museum", 51.5194133, -0.1291453
                     )
                 )
 
@@ -144,34 +144,34 @@ class FakeDataUsingLondonLandmarks {
             }
         }
 
-        fun getItemsCount() = list.count()
+        val nextDTOItem: ReminderDTO
+            get()  {
+                if (list.isEmpty())
+                    generateShuffledData()
 
-        fun getNextDTOItem(): ReminderDTO {
-            if (getItemsCount() == 0)
-                generateShuffledData()
+                val item = list.removeAt(0)
+                return ReminderDTO(
+                    title = item.title,
+                    description = item.description,
+                    location = item.location,
+                    latitude = item.latitude,
+                    longitude = item.longitude
+                )
+            }
 
-            val item = list.removeAt(0)
-            return ReminderDTO(
-                title = item.title,
-                description = item.description,
-                location = item.location,
-                latitude = item.latitude,
-                longitude = item.longitude
-            )
-        }
+        val nextDataItem: ReminderDataItem
+            get(){
+                if (list.isEmpty())
+                    generateShuffledData()
 
-        fun getNextDataItem(): ReminderDataItem {
-            if (getItemsCount() == 0)
-                generateShuffledData()
-
-            val item = list.removeAt(0)
-            return ReminderDataItem(
-                title = item.title,
-                description = item.description,
-                location = item.location,
-                latitude = item.latitude,
-                longitude = item.longitude
-            )
-        }
+                val item = list.removeAt(0)
+                return ReminderDataItem(
+                    title = item.title,
+                    description = item.description,
+                    location = item.location,
+                    latitude = item.latitude,
+                    longitude = item.longitude
+                )
+            }
     }
 }

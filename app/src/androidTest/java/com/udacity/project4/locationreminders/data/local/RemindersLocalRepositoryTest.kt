@@ -59,7 +59,7 @@ private lateinit var localDataSource: RemindersLocalRepository
     @Test
     fun insertNewReminder_and_RetrieveItBack() = runBlocking {
         // IF we have a DTO reminder we want to insert...
-        val reminderToInsert = FakeDataUsingLondonLandmarks.getNextDTOItem()
+        val reminderToInsert = FakeDataUsingLondonLandmarks.nextDTOItem
 
         // GIVEN we insert the DTO reminder
         localDataSource.saveReminder(reminderToInsert)
@@ -86,7 +86,7 @@ private lateinit var localDataSource: RemindersLocalRepository
     @Test
     fun insertNewReminder_and_deleteAllReminders() = runBlocking {
         // IF we have a DTO reminder we want to insert...
-        val reminderToInsert = FakeDataUsingLondonLandmarks.getNextDTOItem()
+        val reminderToInsert = FakeDataUsingLondonLandmarks.nextDTOItem
 
         // GIVEN we insert the DTO reminder
         localDataSource.saveReminder(reminderToInsert)

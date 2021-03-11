@@ -48,7 +48,7 @@ class RemindersListViewModelTest {
         fakeDataSource = FakeDataSource().apply {
             // add 5 random landmark item reminders
             for (i in 1..5){
-                saveReminder(FakeDataUsingLondonLandmarks.getNextDTOItem()) // runBlockingTest because saveReminder() is suspended function
+                saveReminder(FakeDataUsingLondonLandmarks.nextDTOItem) // runBlockingTest because saveReminder() is suspended function
             }
         }
 
