@@ -51,4 +51,8 @@
     <string name="notify_location_heading">Location</string>
     <string name="dlg_no_resolve_places_body">This application relies heavily on the device\'s location. We were unable to resolve location setting. Turn on location settings and try again</string>
     <string name="dlg_no_resolve_places_title">Enable Device Location</string>
+
+    <string name="notify_LAT_heading">LAT</string>
+    <string name="notify_LON_heading">LON</string>
+    <string name="formatted_LatLng">%.7f</string>
 </resources>

@@ -19,6 +19,62 @@
         <!--TODO COMPLETED: add the design of the reminder details-->
 
         <TextView
+            android:id="@+id/reminderLONData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center|start"
+            android:text="@{@string/formatted_LatLng(reminderDataItem.longitude)}"
+            android:textSize="@dimen/text_size_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/reminderLONHeading"
+            app:layout_constraintTop_toTopOf="@+id/reminderLONHeading"
+            tools:text="35.840236, 25.204893" />
+
+        <TextView
+            android:id="@+id/reminderLONHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/notify_LON_heading"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/reminderLATHeading"
+            app:layout_constraintTop_toBottomOf="@+id/reminderLATHeading" />
+
+        <TextView
+            android:id="@+id/reminderLATData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center|start"
+            android:text="@{@string/formatted_LatLng(reminderDataItem.latitude)}"
+            android:textSize="@dimen/text_size_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/reminderLATHeading"
+            app:layout_constraintTop_toTopOf="@+id/reminderLATHeading"
+            tools:text="35.840236, 25.204893" />
+
+        <TextView
+            android:id="@+id/reminderLATHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/notify_LAT_heading"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/reminderLocationData"
+            app:layout_constraintTop_toBottomOf="@+id/reminderLocationData" />
+
+        <TextView
             android:id="@+id/reminderLocationHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

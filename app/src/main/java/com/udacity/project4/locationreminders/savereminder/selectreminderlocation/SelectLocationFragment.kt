@@ -31,8 +31,6 @@ import com.udacity.project4.locationreminders.geofence.GeofencingConstants
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
@@ -159,16 +157,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         _viewModel.circle?.remove()
 
 
-        val title =
-            if (locationName != null){
-                 locationName
-            }
-            else{
-                // Show up to 6 decimal places in Lat/Lon values for aesthetic reasons
-                val df = DecimalFormat("#.#######")
-                df.roundingMode = RoundingMode.CEILING
-                "${df.format(latLng.latitude)},  ${df.format(latLng.longitude)}"
-            }
+        val title = // for the Marker Title...
+            locationName // location name if we selected a POI (that is if the loationName is not null)
+                ?: // otherwise "LAT, LON" with up to 6 decimal places
+                StringBuilder()
+                    .append(getString(R.string.formatted_LatLng).format(latLng.latitude))
+                    .append(", ")
+                    .append(getString(R.string.formatted_LatLng).format(latLng.longitude))
+                    .toString()
 
         // add new marker
         _viewModel.marker = map.addMarker(
