@@ -96,22 +96,6 @@ class SaveReminderFragment : BaseFragment() {
                 }
             }
         }
-
-        // when pressing the save button at the maps fragment, take a note of the marker values to add to geofence
-        _viewModel.saveMarkerLocation.observe(
-            viewLifecycleOwner,
-            { shouldSaveMarkerLatLng ->
-                if (shouldSaveMarkerLatLng) {
-                    _viewModel.saveMarkerLocation.value = false
-
-                    _viewModel.marker?.let { marker ->
-                        _viewModel.latitude.value = marker.position.latitude
-                        _viewModel.longitude.value = marker.position.longitude
-
-                        _viewModel.reminderSelectedLocationStr.value = _viewModel.marker?.title
-                    }
-                }
-            })
     }
 
     override fun onDestroy() {

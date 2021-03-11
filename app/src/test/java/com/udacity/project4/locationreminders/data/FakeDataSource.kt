@@ -9,7 +9,7 @@ class FakeDataSource(private val reminders: MutableList<ReminderDTO>? = mutableL
 //    TODO COMPLETED: Create a fake data source to act as a double to the real data source
     private var shouldReturnError = false
 
-    fun setReturnError(shouldReturnError: Boolean) {
+    fun setShouldReturnError(shouldReturnError: Boolean) {
         this.shouldReturnError = shouldReturnError
     }
 

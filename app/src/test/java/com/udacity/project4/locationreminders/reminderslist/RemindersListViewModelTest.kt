@@ -16,7 +16,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
-import org.robolectric.annotation.Config
 
 //@Config(sdk = [Build.VERSION_CODES.O])
 @RunWith(AndroidJUnit4::class)
@@ -112,9 +111,13 @@ class RemindersListViewModelTest {
         assertThat(viewModel.showNoData.getOrAwaitValue(), `is`(true))
     }
 
+    /**
+     * Create artificial error by setting the setShouldReturnError to true
+     * In this case we should get back an error response with the text "Data Error".
+     */
     @Test
     fun remindersListError() = mainCoroutineRule.runBlockingTest {
-        fakeDataSource.setReturnError(true)
+        fakeDataSource.setShouldReturnError(true)
         viewModel.loadReminders()
 
         assertThat(viewModel.showSnackBar.getOrAwaitValue(), `is`("Data Error"))

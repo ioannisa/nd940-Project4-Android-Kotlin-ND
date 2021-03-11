@@ -19,10 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -36,6 +33,8 @@ import org.koin.android.ext.android.inject
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     private val TAG = SelectLocationFragment::class.java.simpleName
+    var marker: Marker? = null
+    var circle: Circle? = null
 
     //Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
@@ -76,7 +75,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         //        TODO COMPLETED: When the user confirms on the selected location,
         //         send back the selected location details to the view model
         //         and navigate back to the previous fragment to save the reminder and add the geofence
-        _viewModel.saveMarkerLocation.value = true
+        //_viewModel.saveMarkerLocation.value = true
+        _viewModel.updatePOI(marker!!.position, marker!!.title)
         _viewModel.navigationCommand.postValue(NavigationCommand.Back)
     }
 
@@ -153,8 +153,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
      */
     private fun updateMarkerPosition(latLng: LatLng, locationName: String? = null){
         // remove previous marker (if any)
-        _viewModel.marker?.remove()
-        _viewModel.circle?.remove()
+        marker?.remove()
+        circle?.remove()
 
 
         val title = // for the Marker Title...
@@ -167,15 +167,49 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     .toString()
 
         // add new marker
-        _viewModel.marker = map.addMarker(
+        marker = map.addMarker(
             MarkerOptions()
                 .position(latLng)
                 .draggable(false)
                 .title(title)
         )
-        _viewModel.marker?.showInfoWindow()
+        marker?.showInfoWindow()
 
-        _viewModel.circle = map.addCircle(CircleOptions()
+        circle = map.addCircle(CircleOptions()
+            .center(latLng)
+            .radius(GeofencingConstants.RADIUS_IN_METERS.toDouble())
+            .strokeColor(Color.MAGENTA)
+            .fillColor(0x220000FF)
+            .strokeWidth(5f)
+        )
+    }
+
+
+    private fun updateMarkerPosition_old(latLng: LatLng, locationName: String? = null){
+        // remove previous marker (if any)
+        marker?.remove()
+        circle?.remove()
+
+
+        val title = // for the Marker Title...
+            locationName // location name if we selected a POI (that is if the loationName is not null)
+                ?: // otherwise "LAT, LON" with up to 6 decimal places
+                StringBuilder()
+                    .append(getString(R.string.formatted_LatLng).format(latLng.latitude))
+                    .append(", ")
+                    .append(getString(R.string.formatted_LatLng).format(latLng.longitude))
+                    .toString()
+
+        // add new marker
+        marker = map.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .draggable(false)
+                .title(title)
+        )
+        marker?.showInfoWindow()
+
+        circle = map.addCircle(CircleOptions()
             .center(latLng)
             .radius(GeofencingConstants.RADIUS_IN_METERS.toDouble())
             .strokeColor(Color.MAGENTA)
