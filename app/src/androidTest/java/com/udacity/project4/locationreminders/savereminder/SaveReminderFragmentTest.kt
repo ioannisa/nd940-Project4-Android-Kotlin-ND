@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,11 +22,13 @@ import com.udacity.project4.locationreminders.data.local.RemindersLocalRepositor
 import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
 import com.udacity.project4.shared.getOrAwaitValue
 import com.udacity.project4.util.DataBindingIdlingResource
+import com.udacity.project4.util.EspressoIdlingResource
 import com.udacity.project4.util.monitorSaveReminderFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,7 +56,6 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
 
     @Before
     fun init() {
-        // Stop the original app koin.
         stopKoin()
 
         // get the application context
@@ -65,11 +67,29 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
             single { LocalDB.createRemindersDao(context) }
         }
 
-        // Declare a new koin module.
         startKoin {
             modules(listOf(myModule))
             viewModel = get()
         }
+    }
+
+    /**
+     * Idling resources tell Espresso that the app is idle or busy. This is needed when operations
+     * are not scheduled in the main Looper (for example when executed on a different thread).
+     */
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    /**
+     * Unregister your Idling Resource so it can be garbage collected and does not leak any memory.
+     */
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
     /**
@@ -78,7 +98,7 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
      */
     @Test
     fun saveReminder_NoTitle_Error() = runBlocking {
-        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
+        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
         dataBindingIdlingResource.monitorSaveReminderFragment(scenario)
 
         scenario.onFragment {
@@ -166,7 +186,7 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         // Expect a Toast with success message
         ViewMatchers.assertThat(viewModel.showToast.getOrAwaitValue(), `is`(context.getString(R.string.reminder_saved)))
 
-        // hold on for 2 seconds to see the error message with your human eyes
+        // hold on for 2 seconds to see the success message with your human eyes
         delay(2000)
     }
 }
