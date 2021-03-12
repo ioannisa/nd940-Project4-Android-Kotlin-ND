@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth
 import com.udacity.project4.R
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.data.FakeDataSource
@@ -61,7 +62,7 @@ class SaveReminderViewModelTest {
      * When saving an item a loading animation should appear, and when done or failed it should disappear
      */
     @Test
-    fun saveReminder_checkLoading() = mainCoroutineRule.runBlockingTest {
+    fun check_loading() = mainCoroutineRule.runBlockingTest {
          // the loading anim appeared
         mainCoroutineRule.pauseDispatcher()
         viewModel.validateAndSaveReminder(FakeDataUsingLondonLandmarks.nextDataItem)
@@ -70,6 +71,23 @@ class SaveReminderViewModelTest {
         // the loading anim disappeared
         mainCoroutineRule.resumeDispatcher()
         assertThat(viewModel.showLoading.getOrAwaitValue(), `is`(false))
+    }
+
+    /**
+     * When ee add incomplete data (forget to add title), we should get error
+     */
+    @Test
+    fun shouldReturnError() = mainCoroutineRule.runBlockingTest {
+        // get a random reminder
+        val reminder = FakeDataUsingLondonLandmarks.nextDataItem
+        // and remove its title (to simulate error of no title supplied)
+        reminder.title = ""
+
+        // WHEN saving a reminder
+        viewModel.validateAndSaveReminder(reminder)
+
+        // THEN we get displayed a toast with success message
+        Truth.assertThat(viewModel.showSnackBarInt.getOrAwaitValue()).isEqualTo(R.string.err_enter_title)
     }
 
     /**

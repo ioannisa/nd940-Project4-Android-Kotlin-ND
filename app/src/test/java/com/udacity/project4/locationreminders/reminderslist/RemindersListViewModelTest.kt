@@ -69,7 +69,7 @@ class RemindersListViewModelTest {
      * and when done loading the animation goes away
      */
     @Test
-    fun progressBar_AppearDisappear() {
+    fun check_loading() {
         // loading animation show until items loaded
         mainCoroutineRule.pauseDispatcher()
         viewModel.loadReminders()
@@ -116,7 +116,7 @@ class RemindersListViewModelTest {
      * In this case we should get back an error response with the text "Data Error".
      */
     @Test
-    fun remindersListError() = mainCoroutineRule.runBlockingTest {
+    fun shouldReturnError() = mainCoroutineRule.runBlockingTest {
         fakeDataSource.setShouldReturnError(true)
         viewModel.loadReminders()
 
