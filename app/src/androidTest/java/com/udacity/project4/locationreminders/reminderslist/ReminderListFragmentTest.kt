@@ -10,14 +10,17 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.udacity.project4.R
 import com.udacity.project4.locationreminders.data.ReminderDataSource
+import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.EspressoIdlingResource
 import com.udacity.project4.util.monitorReminderListFragment
@@ -69,11 +72,6 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         startKoin {
             modules(listOf(myModule))
             repository = get()
-
-            // start clean
-            runBlocking {
-                repository.deleteAllReminders()
-            }
         }
     }
 
@@ -98,6 +96,9 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
 
 //    TODO COMPLETED: test the navigation of the fragments.
+    /**
+     * When the user clicks on the FAB, is navigated to the "SaveReminderFragment"
+     */
     @Test
     fun fab_navigates_to_SaveReminderFragment() {
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
@@ -113,5 +114,66 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
         // Expect to be navigated to the SaveReminderFragment
         Mockito.verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
+    }
+
+    /**
+     * Adding 5 random items and checking whether the data of these items is reflected on the screen
+     */
+//    TODO: test the displayed data on the UI.
+    @Test
+    fun addedItems_displayProperlyOnScreen() {
+
+        val remindersToBeAdded = mutableListOf<ReminderDTO>()
+
+        runBlocking {
+            // cleanup reminders to make easier to see when we double check the inserted data values
+            repository.deleteAllReminders()
+
+            for (i in 1..5) {
+                // add 5 random, fresh reminders
+                val reminder = FakeDataUsingLondonLandmarks.nextDTOItem
+                remindersToBeAdded.add(reminder)     // keep a copy of the reminder to be added
+                repository.saveReminder(reminder)    // then add it at the repository
+            }
+        }
+
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        dataBindingIdlingResource.monitorReminderListFragment(scenario)
+
+        // now check that the list of the "reminders to be added" matches the data of the displayed - added - reminders
+        remindersToBeAdded.forEach{
+            Espresso.onView(withText(it.title)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            Espresso.onView(withText(it.description)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            Espresso.onView(withText(it.location)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        }
+
+        runBlocking {
+            // hold on for 2 seconds to see the outcome with your human eyes
+            delay(2000)
+        }
+    }
+
+    /**
+     * Going with empty data, should display the "No Data" message on the screen
+     */
+    //    TODO: test the displayed data on the UI.
+    @Test
+    fun noItems_displays_noDataMessage() {
+
+        runBlocking {
+            // cleanup reminders again to check "no data" message on an empty reminder list
+            repository.deleteAllReminders()
+        }
+
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        dataBindingIdlingResource.monitorReminderListFragment(scenario)
+
+        Espresso.onView(ViewMatchers.withId(R.id.noDataTextView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        runBlocking {
+            // hold on for 2 seconds to see the "No Items" message with your human eyes
+            delay(2000)
+        }
     }
 }

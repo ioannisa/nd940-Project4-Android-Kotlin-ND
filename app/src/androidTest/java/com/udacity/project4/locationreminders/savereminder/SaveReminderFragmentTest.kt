@@ -19,6 +19,7 @@ import com.udacity.project4.R
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
+import com.udacity.project4.locationreminders.reminderslist.ReminderListFragmentDirections
 import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
 import com.udacity.project4.shared.getOrAwaitValue
 import com.udacity.project4.util.DataBindingIdlingResource
@@ -69,8 +70,9 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
 
         startKoin {
             modules(listOf(myModule))
-            viewModel = get()
         }
+
+        viewModel = get()
     }
 
     /**
@@ -92,18 +94,15 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
+//    TODO COMPLETE: add testing for the error messages.
     /**
      * In this test we simply try to save a completely empty reminder
      * The first error check is the title, thus we will get an error message asking to fill in the title
      */
     @Test
-    fun saveReminder_NoTitle_Error() = runBlocking {
+    fun saveReminder_NoTitle_Error() {
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
         dataBindingIdlingResource.monitorSaveReminderFragment(scenario)
-
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, Mockito.mock(NavController::class.java))
-        }
 
         // Click the Save button
         Espresso.onView(ViewMatchers.withId(R.id.saveReminder)).perform(ViewActions.click())
@@ -111,8 +110,10 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         // Expect an error message about the title not being set
         Truth.assertThat(viewModel.showSnackBarInt.getOrAwaitValue()).isEqualTo(R.string.err_enter_title)
 
-        // hold on for 2 seconds to see the error message with your human eyes
-        delay(2000)
+        runBlocking {
+            // hold on for 2 seconds to see the error message with your human eyes
+            delay(2000)
+        }
     }
 
     /**
@@ -120,13 +121,9 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
      * However the location will be unset, we should get an location_error shown in the SnackBar
      */
     @Test
-    fun saveReminder_NoLocation_Error() = runBlocking {
+    fun saveReminder_NoLocation_Error() {
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
         dataBindingIdlingResource.monitorSaveReminderFragment(scenario)
-
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, Mockito.mock(NavController::class.java))
-        }
 
         // Get a random reminder (reminderDataItem) from the pool of fake data
         val reminderDataItem = FakeDataUsingLondonLandmarks.nextDataItem
@@ -146,21 +143,26 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         // Expect an error message about location not being set
         Truth.assertThat(viewModel.showSnackBarInt.getOrAwaitValue()).isEqualTo(R.string.err_select_location)
 
-        // hold on for 2 seconds to see the error message with your human eyes
-        delay(2000)
+        runBlocking {
+            // hold on for 2 seconds to see the error message with your human eyes
+            delay(2000)
+        }
     }
 
+//    TODO COMPLETE: test the displayed data on the UI.
+//    TODO COMPLETED: test the navigation of the fragments.
     /**
      * In this test we will get all the info (Title, Detail Text, Location)
      * and we expect to successfully add a reminder
      */
     @Test
-    fun saveReminder_FullData_Success() = runBlocking {
+    fun saveReminder_FullData_Success() {
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
         dataBindingIdlingResource.monitorSaveReminderFragment(scenario)
 
+        val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, Mockito.mock(NavController::class.java))
+            Navigation.setViewNavController(it.view!!, navController)
         }
 
         // Get a random reminder (reminderDataItem) from the pool of fake data
@@ -183,10 +185,15 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         // Click the Save button
         Espresso.onView(ViewMatchers.withId(R.id.saveReminder)).perform(ViewActions.click())
 
-        // Expect a Toast with success message
+        // If all aok, then expect to be navigated back to the ReminderListFragment (pop at the navigation BackStack)
+        Mockito.verify(navController).popBackStack()
+
+        // When all ok, a Toast with success message should also appear
         ViewMatchers.assertThat(viewModel.showToast.getOrAwaitValue(), `is`(context.getString(R.string.reminder_saved)))
 
-        // hold on for 2 seconds to see the success message with your human eyes
-        delay(2000)
+        runBlocking {
+            // hold on for 2 seconds to see the success message with your human eyes
+            delay(2000)
+        }
     }
 }
