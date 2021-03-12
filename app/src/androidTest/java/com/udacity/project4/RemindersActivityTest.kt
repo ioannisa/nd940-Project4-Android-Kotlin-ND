@@ -1,30 +1,24 @@
 package com.udacity.project4
 
 import android.app.Application
-import android.os.Bundle
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.locationreminders.reminderslist.ReminderListFragment
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.shared.FakeDataUsingLondonLandmarks
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.EspressoIdlingResource
 import com.udacity.project4.util.monitorActivity
-import com.udacity.project4.util.monitorReminderListFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -85,7 +79,7 @@ class RemindersActivityTest :
     }
 
 
-//    TODO: add End to End testing to the app
+//    TODO COMPLETED: add End to End testing to the app
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     /**
@@ -107,6 +101,9 @@ class RemindersActivityTest :
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
+    /**
+     * Add a reminder item and check its its details reflect what is displayed on the screen
+     */
     @Test
     fun addAnItem_and_checkItShowsUpProperly() {
         val reminder = FakeDataUsingLondonLandmarks.nextDTOItem // create a random, fresh reminder
